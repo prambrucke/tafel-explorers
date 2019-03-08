@@ -1,0 +1,299 @@
+swagger: "2.0"
+info:
+  description: "This is a explorer service. It can be used to create, view, modify and delete explorers. It is also used to login and logout of the system."
+  version: "1.0.0"
+  title: "Explorer Service API"
+  contact:
+    email: "prashanth.ramakrishnan@gmail.com"
+  license:
+    name: "MIT License"
+    url: "https://opensource.org/licenses/MIT"
+host: "explorerservice.swagger.io"
+basePath: "/v2"
+tags:
+- name: "explorer"
+  description: "API to perform different operations on explorer"
+- name: "team"
+  description: "API to perform different operations on team"
+schemes:
+- "https"
+- "http"
+paths:
+  /explorer:
+    post:
+      tags:
+      - "explorer"
+      summary: "Create explorer"
+      description: "This can only be done by the logged in explorer."
+      operationId: "createExplorer"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created explorer object"
+        required: true
+        schema:
+          $ref: "#/definitions/Explorer"
+      responses:
+        201:
+          description: "successful operation"
+          schema:
+            type: "string"
+        409:
+          description: "conflict. another explorer found with same name"
+          schema:
+            type: "string"
+  /explorer/{explorername}:
+    get:
+      tags:
+      - "explorer"
+      summary: "Get explorer by explorer name"
+      description: ""
+      operationId: "getExplorerByName"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "explorername"
+        in: "path"
+        description: "The name that needs to be fetched. Use explorer1 for testing. "
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ExplorerSummary"
+        400:
+          description: "Invalid explorername supplied"
+        404:
+          description: "Explorer not found"
+    put:
+      tags:
+      - "explorer"
+      summary: "Updated explorer"
+      description: "This can only be done by the logged in explorer."
+      operationId: "updateExplorer"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "explorername"
+        in: "path"
+        description: "name that need to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated explorer object"
+        required: true
+        schema:
+          $ref: "#/definitions/Explorer"
+      responses:
+        204:
+          description: "successful operation. no content"
+        400:
+          description: "Invalid explorer supplied"
+        404:
+          description: "Explorer not found"
+  /explorer/delete/{explorername}:
+    post:
+      tags:
+      - "explorer"
+      summary: "delete a explorer"
+      description: "deactivates a explorer from the system"
+      operationId: "deleteExplorer"
+      produces: 
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "explorername"
+        in: "path"
+        description: "name that need to be deleted"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Delete explorer object"
+        required: true
+        schema:
+          $ref: "#/definitions/EmptyBody"
+      responses:
+        200:
+          description: "successfully deleted explorer"
+        400:
+          description: "Invalid explorer supplied"
+        404:
+          description: "Explorer not found"
+  /explorer/login:
+    post:
+      tags:
+      - "explorer"
+      summary: "Logs explorer into the system"
+      description: ""
+      operationId: "loginExplorer"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Logs the explorer in"
+        required: true
+        schema:
+          $ref: "#/definitions/Explorer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "string"
+        400:
+          description: "Invalid explorername/password supplied"
+        404:
+          description: "explorer not found"
+  /explorer/logout:
+    get:
+      tags:
+      - "explorer"
+      summary: "Logs out current logged in explorer session"
+      description: ""
+      operationId: "logoutExplorer"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters: []
+      responses:
+        default:
+          description: "successful operation"
+  /team:
+    post:
+      tags:
+      - "team"
+      summary: "Create team"
+      description: ""
+      operationId: "createTeam"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created team object"
+        required: true
+        schema:
+          $ref: "#/definitions/Team"
+      responses:
+        201:
+          description: "successful operation"
+          schema:
+            type: "string"
+        409:
+          description: "conflict. another team found with same name"
+          schema:
+            type: "string"
+  /team/{teamname}:
+    get:
+      tags:
+      - "team"
+      summary: "Get team by team name"
+      description: ""
+      operationId: "getTeamByName"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "teamname"
+        in: "path"
+        description: "The name that needs to be fetched. Use team1 for testing. "
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/TeamSummary"
+        400:
+          description: "Invalid teamname supplied"
+        404:
+          description: "team not found"
+    put:
+      tags:
+      - "team"
+      summary: "Updated team details"
+      description: "To update team details."
+      operationId: "updateTeam"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "teamname"
+        in: "path"
+        description: "team name that need to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated team object"
+        required: true
+        schema:
+          $ref: "#/definitions/TeamSummary"
+      responses:
+        204:
+          description: "successful operation. no content"
+        400:
+          description: "Invalid team name supplied"
+        404:
+          description: "team not found"
+definitions:
+  Explorer:
+    type: "object"
+    properties:
+      explorername:
+        type: "string"
+      firstName:
+        type: "string"
+      lastName:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+  ExplorerSummary:
+    type: "object"
+    properties:
+      explorername:
+        type: "string"
+      firstName:
+        type: "string"
+      lastName:
+        type: "string"
+      email:
+        type: "string"
+      role:
+        type: "string"
+      teams:
+        type: "array"
+        items:
+          $ref: "#/definitions/Team"
+  Team:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+  TeamSummary:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      explorers:
+        type: "array"
+        items:
+          $ref: "#/definitions/ExplorerSummary"
+  EmptyBody:
+    type: "object"
