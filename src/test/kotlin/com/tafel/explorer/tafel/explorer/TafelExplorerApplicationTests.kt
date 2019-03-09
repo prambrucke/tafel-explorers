@@ -1,4 +1,4 @@
-package com.tafel.explorer.tafelexplorer
+package com.tafel.explorer.tafel.explorer
 
 import org.junit.Test
 import org.junit.runner.RunWith

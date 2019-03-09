@@ -1,6 +1,6 @@
-package com.tafel.explorer.tafelexplorer
+package com.tafel.explorer.tafel.explorer
 
-import com.tafel.explorer.tafelexplorer.model.Team
+import com.tafel.explorer.tafel.explorer.model.Team
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
