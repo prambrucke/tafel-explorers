@@ -1,0 +1,230 @@
+swagger: "2.0"
+info:
+  description: "This is a explorer service. It can be used to create, view, modify and delete explorers. It is also used to login and logout of the system."
+  version: "1.0.0"
+  title: "Explorers Service API"
+  contact:
+    name: "Github Issues"
+    url: "https://github.com/prambrucke/tafel/issues"
+  license:
+    name: "MIT License"
+    url: "https://opensource.org/licenses/MIT"
+host: "TBD"
+tags:
+- name: "explorers"
+  description: "API to perform different operations on explorer"
+- name: "teams"
+  description: "API to perform different operations on team"
+schemes:
+- "https"
+paths:
+  /explorers:
+    post:
+      tags:
+      - "explorers"
+      summary: "Create explorer"
+      description: "This can only be done by the logged in explorer."
+      operationId: "createExplorer"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "explorer" 
+        in: "body"
+        description: "Created explorer object"
+        required: true
+        schema:
+          $ref: "#/definitions/Explorer"
+      responses:
+        201:
+          description: "successful operation"
+          schema:
+            type: "string"
+        default:
+          description: Error occurred - see status code and problem object for information
+          schema:
+            $ref: '#/definitions/Problem'
+  /explorers/{explorer-id}:
+    get:
+      tags:
+      - "explorers"
+      summary: "Get explorer by id"
+      description: ""
+      operationId: "getExplorerById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "explorer-id"
+        in: "path"
+        description: "The name that needs to be fetched. Use explorer1 for testing. "
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Explorer"
+        default:
+          description: Error occurred - see status code and problem object for information
+          schema:
+            $ref: '#/definitions/Problem'
+    put:
+      tags:
+      - "explorers"
+      summary: "Updated explorer"
+      description: "This can only be done by the logged in explorer."
+      operationId: "updateExplorer"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "explorer-id"
+        in: "path"
+        description: "id that need to be updated"
+        required: true
+        type: "string"
+      - name: "explorer"
+        in: "body"
+        description: "Updated explorer object"
+        required: true
+        schema:
+          $ref: "#/definitions/Explorer"
+      responses:
+        204:
+          description: "successful operation. no content"
+        default:
+          description: Error occurred - see status code and problem object for information
+          schema:
+            $ref: '#/definitions/Problem'
+  /teams:
+    post:
+      tags:
+      - "teams"
+      summary: "Create team"
+      description: ""
+      operationId: "createTeam"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "team" 
+        in: "body"
+        description: "Created team object"
+        required: true
+        schema:
+          $ref: "#/definitions/Team"
+      responses:
+        201:
+          description: "successful operation"
+          schema:
+            type: "string"
+        default:
+          description: Error occurred - see status code and problem object for information
+          schema:
+            $ref: '#/definitions/Problem'
+  /teams/{team-id}:
+    get:
+      tags:
+      - "teams"
+      summary: "Get team by team name"
+      description: ""
+      operationId: "getTeamById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "team-id"
+        in: "path"
+        description: "The name that needs to be fetched. Use team1 for testing. "
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Team"
+        default:
+          description: Error occurred - see status code and problem object for information
+          schema:
+            $ref: '#/definitions/Problem'
+    put:
+      tags:
+      - "teams"
+      summary: "Updated team details"
+      description: "To update team details."
+      operationId: "updateTeam"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "team-id"
+        in: "path"
+        description: "team name that need to be updated"
+        required: true
+        type: "string"
+      - name: "team"
+        in: "body"
+        description: "Updated team object"
+        required: true
+        schema:
+          $ref: "#/definitions/Team"
+      responses:
+        204:
+          description: "successful operation. no content"
+        default:
+          description: Error occurred - see status code and problem object for information
+          schema:
+            $ref: '#/definitions/Problem'
+definitions:
+  Explorer:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      first_name:
+        type: "string"
+      last_name:
+        type: "string"
+      email:
+        type: "string"
+        format: "email"
+      avatar:
+        type: "object"
+      role:
+        $ref: '#/definitions/Role'
+      teams:
+        type: "array"
+        items:
+          $ref: "#/definitions/Team"
+    required: 
+      - id
+      - first_name
+      - last_name
+      - email
+      - role
+  Role:
+    type: "string"
+    x-extensible-enum:
+      - admin
+      - owner
+      - user
+  Team:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+    required: 
+      - id
+      - name
+  Problem:
+    type: "object"
+    properties:
+      error_code:
+        type: "string"
+        example: "NOT_FOUND"
+      message:
+        type: "string"
+        example: "Error description"
