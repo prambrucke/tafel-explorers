@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  description: "This is a explorer service. It can be used to create, view, modify and delete explorers. It is also used to login and logout of the system."
+  description: "This is a explorer service. It can be used to create, view and modify explorers and teams."
   version: "1.0.0"
   title: "Explorers Service API"
   contact:
@@ -9,14 +9,14 @@ info:
   license:
     name: "MIT License"
     url: "https://opensource.org/licenses/MIT"
-host: "TBD"
+host: "localhost:8080"
 tags:
 - name: "explorers"
   description: "API to perform different operations on explorer"
 - name: "teams"
   description: "API to perform different operations on team"
 schemes:
-- "https"
+- "http"
 paths:
   /explorers:
     post:
@@ -26,7 +26,6 @@ paths:
       description: "This can only be done by the logged in explorer."
       operationId: "createExplorer"
       produces:
-      - "application/xml"
       - "application/json"
       parameters:
       - name: "explorer" 
@@ -52,7 +51,6 @@ paths:
       description: ""
       operationId: "getExplorerById"
       produces:
-      - "application/xml"
       - "application/json"
       parameters:
       - name: "explorer-id"
@@ -76,7 +74,6 @@ paths:
       description: "This can only be done by the logged in explorer."
       operationId: "updateExplorer"
       produces:
-      - "application/xml"
       - "application/json"
       parameters:
       - name: "explorer-id"
@@ -105,7 +102,6 @@ paths:
       description: ""
       operationId: "createTeam"
       produces:
-      - "application/xml"
       - "application/json"
       parameters:
       - name: "team" 
@@ -131,7 +127,6 @@ paths:
       description: ""
       operationId: "getTeamById"
       produces:
-      - "application/xml"
       - "application/json"
       parameters:
       - name: "team-id"
@@ -155,7 +150,6 @@ paths:
       description: "To update team details."
       operationId: "updateTeam"
       produces:
-      - "application/xml"
       - "application/json"
       parameters:
       - name: "team-id"

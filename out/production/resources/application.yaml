@@ -1,0 +1,15 @@
+spring:
+  endpoints:
+    enabled: false
+    health:
+      enabled: true
+    metrics:
+      enabled: true
+    loggers:
+      enabled: true
+  datasource:
+    url: "jdbc:postgresql://${DATABASE_HOST:localhost}:32768/tafel-explorers"
+    username: postgres
+    password: postgres
+  flyway:
+    schemas: tafel-explorers

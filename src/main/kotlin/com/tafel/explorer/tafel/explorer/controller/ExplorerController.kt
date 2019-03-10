@@ -1,15 +1,17 @@
 package com.tafel.explorer.tafel.explorer.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.tafel.explorer.tafel.explorer.model.Explorer
 import com.tafel.explorer.tafel.explorer.service.ExplorerService
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-class ExplorerController(var explorerService: ExplorerService) {
+class ExplorerController(var explorerService: ExplorerService, val objectMapper: ObjectMapper) {
 
-    @PostMapping("explorers")
-    fun createExplorer(explorer: Explorer): ResponseEntity<Explorer>{
+    @PostMapping("explorers", consumes = [MediaType.APPLICATION_JSON_VALUE] , produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun createExplorer(@RequestBody explorer: Explorer): ResponseEntity<Explorer>{
         System.out.println("------>"+explorer)
         return ResponseEntity.ok(explorerService.createExplorer(explorer))
     }
