@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.jdbc.support.KeyHolder
 import org.springframework.stereotype.Repository
+import java.sql.ResultSet
 import java.util.*
 
 
@@ -40,38 +41,46 @@ class ExplorerDAO(val namedJdbcTemplate: NamedParameterJdbcTemplate) {
     }
 
     private fun associateExplorerWithTeam(explorer: Explorer): Boolean{
-        try {
-            val teams: List<Team>? = explorer.teams
-            if (null == teams || teams.isEmpty())
-                return true
-            teams.forEach {
-                val inputData = mapOf("team_id" to it.id,
-                        "explorer_id" to explorer.id,
-                        "status" to ActivityStatus.ACTIVE.toString(),
-                        "created_at" to Date(),
-                        "created_by" to explorer.created_by,
-                        "updated_at" to Date(),
-                        "updated_by" to explorer.updated_by
-                )
-                namedJdbcTemplate.update(SQLQueries.MAP_EXPLORER_TO_TEAM, inputData)
-            }
-        }
-        catch(e: Exception){
-            e.printStackTrace()
-            throw e
+        val teams: List<Team>? = explorer.teams
+        if (null == teams || teams.isEmpty())
+            return true
+        teams.forEach {
+            val inputData = mapOf("team_id" to it.id,
+                    "explorer_id" to explorer.id,
+                    "status" to ActivityStatus.ACTIVE.toString(),
+                    "created_at" to Date(),
+                    "created_by" to explorer.created_by,
+                    "updated_at" to Date(),
+                    "updated_by" to explorer.updated_by
+            )
+            namedJdbcTemplate.update(SQLQueries.MAP_EXPLORER_TO_TEAM, inputData)
         }
         return true
     }
 
     fun getExplorerById(explorerId: String): Explorer {
         val inputData = mapOf("explorer_id" to explorerId)
-        /*namedJdbcTemplate.query(SQLQueries.GET_EXPLORER_BY_ID,inputData, RowMapper<Explorer> { rs, rowNum ->
-
+        val explorers: List<Explorer> = namedJdbcTemplate.query(SQLQueries.GET_EXPLORER_DETAILS_BY_ID, inputData, RowMapper<Explorer>{
+            rs: ResultSet, rowNum: Int ->
+            Explorer(rs.getInt("id"), rs.getString("first_name"), rs.getString("last_name"),
+                    rs.getString("email"), emptyList(), Role.valueOf(rs.getString("role")),
+                    ActivityStatus.valueOf(rs.getString("status")), rs.getString("created_by"),
+                    rs.getDate("created_at"), rs.getString("updated_by"), rs.getDate("updated_at"))
         })
-*/
-        val lst = emptyList<Team>()
-        return Explorer(1, "Explorer1-FirstName", "Explorer1-LastName", "Explorer1@mail.com", lst, Role.USER, ActivityStatus.ACTIVE, null, null, "", Date());
+        var explorer = explorers.get(0);
+        explorer.teams = getTeamsForExplorerById(explorerId)
+        return explorer
+    }
 
+    fun getTeamsForExplorerById(explorerId: String): List<Team>{
+        val inputData = mapOf("explorer_id" to explorerId)
+        val teams: List<Team> = namedJdbcTemplate.query(SQLQueries.GET_EXPLORER_TEAM_DETAILS_BY_ID, inputData, RowMapper<Team>{
+            rs: ResultSet, i: Int ->
+            Team(rs.getInt("id"), rs.getString("name"), ActivityStatus.valueOf(rs.getString("status")),
+                    rs.getString("created_by"), rs.getDate("created_at"), rs.getString("updated_by"),
+                    rs.getDate("updated_at"))
+        })
+        return teams;
     }
 
     fun updateExplorerById(explorerId: String, explorer: Explorer): Explorer {

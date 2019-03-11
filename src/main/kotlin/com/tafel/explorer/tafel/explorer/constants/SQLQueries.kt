@@ -16,10 +16,14 @@ object SQLQueries {
                 name, status, created_by, created_at, updated_by, updated_at)
         VALUES (:name, :status, :created_by, :created_at, :updated_by, :updated_at);
     """.trimIndent()
-    val GET_EXPLORER_BY_ID: String = """
-        SELECT explorer.id, explorer.first_name, explorer.last_name, explorer.email, explorer.role, explorer.status,
-        explorer.created_by, explorer.updated_by, explorer.updated_at, teams.id, teams.name from
-            "tafel-explorers".explorers explorer, "tafel-explorers".teams teams, "tafel-explorers".explorer_team mapper
-        WHERE mapper.explorer_id = :explorer_id and mapper.explorer_id = explorer.id and teams.id = mapper.team_id
+    val GET_EXPLORER_DETAILS_BY_ID: String = """
+        SELECT id, first_name, last_name, email, role, status, created_by, created_at, updated_by, updated_at from
+            "tafel-explorers".explorers  WHERE id::varchar = :explorer_id
+    """.trimIndent()
+
+    val GET_EXPLORER_TEAM_DETAILS_BY_ID: String = """
+        SELECT teams.id, teams.name, teams.status, teams.created_by, teams.created_at, teams.updated_by, teams.updated_at from
+        "tafel-explorers".teams teams, "tafel-explorers".explorer_team mapper
+        where mapper.explorer_id::varchar = :explorer_id and mapper.team_id = teams.id
     """.trimIndent()
 }

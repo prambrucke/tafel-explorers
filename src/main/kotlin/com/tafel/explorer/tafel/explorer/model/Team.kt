@@ -9,5 +9,5 @@ data class Team (
         val created_by: String?,
         val created_at: Date?,
         val updated_by: String?,
-        val updated_at: Date?
+        val updated_at: Date ?
 )
