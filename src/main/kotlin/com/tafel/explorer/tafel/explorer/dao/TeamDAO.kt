@@ -13,7 +13,7 @@ class TeamDAO(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
     fun createTeam(team: Team): Team {
         val inputData = mapOf(
                 "name" to team.name,
-                "status" to ActivityStatus.ACTIVE,
+                "status" to ActivityStatus.ACTIVE.toString(),
                 "created_by" to team.created_by,
                 "created_at" to Date(),
                 "updated_by" to team.updated_by,

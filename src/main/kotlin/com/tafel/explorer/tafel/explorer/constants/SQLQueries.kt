@@ -13,7 +13,13 @@ object SQLQueries {
     """.trimIndent()
     val CREATE_TEAM: String = """
         INSERT INTO "tafel-explorers".teams(
-                id, name, status, created_by, created_at, updated_by, updated_at)
-        VALUES (:id, :name, :status, :created_by, :created_at, :updated_by, :updated_at) RETURNING id;
+                name, status, created_by, created_at, updated_by, updated_at)
+        VALUES (:name, :status, :created_by, :created_at, :updated_by, :updated_at);
+    """.trimIndent()
+    val GET_EXPLORER_BY_ID: String = """
+        SELECT explorer.id, explorer.first_name, explorer.last_name, explorer.email, explorer.role, explorer.status,
+        explorer.created_by, explorer.updated_by, explorer.updated_at, teams.id, teams.name from
+            "tafel-explorers".explorers explorer, "tafel-explorers".teams teams, "tafel-explorers".explorer_team mapper
+        WHERE mapper.explorer_id = :explorer_id and mapper.explorer_id = explorer.id and teams.id = mapper.team_id
     """.trimIndent()
 }

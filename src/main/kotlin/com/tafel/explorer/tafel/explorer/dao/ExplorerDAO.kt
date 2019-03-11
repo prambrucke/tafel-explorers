@@ -5,6 +5,7 @@ import com.tafel.explorer.tafel.explorer.model.ActivityStatus
 import com.tafel.explorer.tafel.explorer.model.Explorer
 import com.tafel.explorer.tafel.explorer.model.Role
 import com.tafel.explorer.tafel.explorer.model.Team
+import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.support.GeneratedKeyHolder
@@ -33,7 +34,6 @@ class ExplorerDAO(val namedJdbcTemplate: NamedParameterJdbcTemplate) {
         inputData.addValue("updated_by", explorer.updated_by)
         inputData.addValue("updated_at", Date())
         namedJdbcTemplate.update(SQLQueries.CREATE_EXPLORER, inputData, keyHolder)
-        System.out.println("explorer id inserted----->"+keyHolder.key.toString())
         explorer.id = keyHolder.key!!.toInt()
         associateExplorerWithTeam(explorer)
         return explorer
@@ -64,8 +64,14 @@ class ExplorerDAO(val namedJdbcTemplate: NamedParameterJdbcTemplate) {
     }
 
     fun getExplorerById(explorerId: String): Explorer {
-        val lst: List<Team> = emptyList();
+        val inputData = mapOf("explorer_id" to explorerId)
+        /*namedJdbcTemplate.query(SQLQueries.GET_EXPLORER_BY_ID,inputData, RowMapper<Explorer> { rs, rowNum ->
+
+        })
+*/
+        val lst = emptyList<Team>()
         return Explorer(1, "Explorer1-FirstName", "Explorer1-LastName", "Explorer1@mail.com", lst, Role.USER, ActivityStatus.ACTIVE, null, null, "", Date());
+
     }
 
     fun updateExplorerById(explorerId: String, explorer: Explorer): Explorer {
