@@ -13,6 +13,8 @@ import org.springframework.jdbc.support.KeyHolder
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 import java.util.*
+import java.util.stream.Collectors
+import kotlin.collections.ArrayList
 
 
 @Repository
@@ -36,14 +38,11 @@ class ExplorerDAO(val namedJdbcTemplate: NamedParameterJdbcTemplate) {
         inputData.addValue("updated_at", Date())
         namedJdbcTemplate.update(SQLQueries.CREATE_EXPLORER, inputData, keyHolder)
         explorer.id = keyHolder.key!!.toInt()
-        associateExplorerWithTeam(explorer)
+        mapExplorerWithTeam(explorer, explorer.teams!!)
         return explorer
     }
 
-    private fun associateExplorerWithTeam(explorer: Explorer): Boolean{
-        val teams: List<Team>? = explorer.teams
-        if (null == teams || teams.isEmpty())
-            return true
+    private fun mapExplorerWithTeam(explorer: Explorer, teams: Collection<Team>): Boolean{
         teams.forEach {
             val inputData = mapOf("team_id" to it.id,
                     "explorer_id" to explorer.id,
@@ -72,7 +71,7 @@ class ExplorerDAO(val namedJdbcTemplate: NamedParameterJdbcTemplate) {
         return explorer
     }
 
-    fun getTeamsForExplorerById(explorerId: String): List<Team>{
+    private fun getTeamsForExplorerById(explorerId: String): List<Team>{
         val inputData = mapOf("explorer_id" to explorerId)
         val teams: List<Team> = namedJdbcTemplate.query(SQLQueries.GET_EXPLORER_TEAM_DETAILS_BY_ID, inputData, RowMapper<Team>{
             rs: ResultSet, i: Int ->
@@ -83,7 +82,58 @@ class ExplorerDAO(val namedJdbcTemplate: NamedParameterJdbcTemplate) {
         return teams;
     }
 
-    fun updateExplorerById(explorerId: String, explorer: Explorer): Explorer {
+    fun updateExplorerById(explorer: Explorer): Explorer {
+        updateExplorerDetailsByExplorerId(explorer);
+        updateTeamForExplorerByExplorerId(explorer);
         return explorer;
     }
+
+    private fun updateExplorerDetailsByExplorerId(explorer: Explorer): Boolean{
+        val inputData = MapSqlParameterSource()
+        inputData.addValue("explorer_id", explorer.id)
+        inputData.addValue("first_name", explorer.first_name)
+        inputData.addValue("last_name", explorer.last_name)
+        inputData.addValue("email", explorer.email)
+        inputData.addValue("role", explorer.role.toString())
+        inputData.addValue("status", explorer.status.toString())
+        inputData.addValue("updated_by", explorer.updated_by)
+        inputData.addValue("updated_at", Date())
+        namedJdbcTemplate.update(SQLQueries.UPDATE_EXPLORER_DETAILS_BY_ID, inputData)
+        return true
+    }
+
+    private fun updateTeamForExplorerByExplorerId(explorer: Explorer): Boolean{
+        val teamsInDB:MutableSet<String> = getTeamsForExplorerById(explorer.id.toString())
+                                                .stream()
+                                                .map { it.id.toString() }.collect(Collectors.toSet())
+        var teamsCurrent:List<Team> = explorer.teams!!
+        val newTeams: MutableList<Team> = ArrayList()
+        teamsCurrent.forEach({
+            /* If teams from front end is available in the DB, then remove it from teamsInDB set, if not available then it is a new team
+            * teams that are leftoff in the teamsInDB after comparing teamsCurrent is the teams that got removed from the explorer*/
+            if(teamsInDB.contains(it.id.toString())){
+                teamsInDB.remove(it.id.toString())
+            }
+            else{
+                newTeams.add(it)
+            }
+        })
+        removeTeamFromExplorer(explorer, teamsInDB)
+        mapExplorerWithTeam(explorer, newTeams)
+        return true
+    }
+
+    private fun removeTeamFromExplorer(explorer: Explorer, teams: Collection<String>){
+        teams.forEach({removeEachTeam(explorer, it)})
+    }
+
+    private fun removeEachTeam(explorer: Explorer, teamId: String){
+        val inputData = mapOf("team_id" to teamId,
+                "explorer_id" to explorer.id,
+                "status" to ActivityStatus.INACTIVE.toString(),
+                "updated_by" to explorer.updated_by,
+                "updated_at" to explorer.updated_at)
+        namedJdbcTemplate.update(SQLQueries.REMOVE_TEAM_MAPPING_FOR_EXPLORER_BY_ID, inputData)
+    }
+
 }

@@ -22,7 +22,7 @@ class ExplorerController(var explorerService: ExplorerService, val objectMapper:
     }
 
     @PutMapping("explorers/{explorer-id}")
-    fun updateExplorerById(@PathVariable("explorer-id") explorerId: String, explorer: Explorer): Explorer {
-        return explorerService.updateExplorerById(explorerId, explorer);
+    fun updateExplorerById(@PathVariable("explorer-id") explorerId: String, @RequestBody explorer: Explorer): Explorer {
+        return explorerService.updateExplorerById(explorer);
     }
 }

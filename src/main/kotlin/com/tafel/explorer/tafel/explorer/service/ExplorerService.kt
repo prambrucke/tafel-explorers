@@ -18,7 +18,8 @@ class ExplorerService(val explorerDAO: ExplorerDAO) {
         return explorerDAO.getExplorerById(explorerId)
     }
 
-    fun updateExplorerById(explorerId: String, explorer: Explorer): Explorer {
-        return explorerDAO.updateExplorerById(explorerId, explorer);
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = [Exception::class])
+    fun updateExplorerById(explorer: Explorer): Explorer {
+        return explorerDAO.updateExplorerById(explorer);
     }
 }
