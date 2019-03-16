@@ -16,6 +16,14 @@ object SQLQueries {
                 name, status, created_by, created_at, updated_by, updated_at)
         VALUES (:name, :status, :created_by, :created_at, :updated_by, :updated_at);
     """.trimIndent()
+    val UPDATE_TEAM_BY_ID: String = """
+        UPDATE "tafel-explorers".teams set
+                name = :name, status = :status, updated_by = :updated_by, updated_at = :updated_at where id = :id
+    """.trimIndent()
+    val GET_TEAM_BY_ID: String = """
+        SELECT teams.id, teams.name, teams.status, teams.created_by, teams.created_at, teams.updated_by, teams.updated_at from
+        "tafel-explorers".teams where id::varchar = :team_id;
+    """.trimIndent()
     val GET_EXPLORER_DETAILS_BY_ID: String = """
         SELECT id, first_name, last_name, email, role, status, created_by, created_at, updated_by, updated_at from
             "tafel-explorers".explorers  WHERE id::varchar = :explorer_id

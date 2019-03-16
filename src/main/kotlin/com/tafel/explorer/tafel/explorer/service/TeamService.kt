@@ -15,7 +15,7 @@ class TeamService(val teamDAO: TeamDAO) {
         return teamDAO.getTeamById(teamId)
     }
 
-    fun updateTeamById(teamId: String, team: Team): Team {
-        return teamDAO.updateTeamById(teamId, team)
+    fun updateTeamById(team: Team): Team {
+        return teamDAO.updateTeamById(team)
     }
 }

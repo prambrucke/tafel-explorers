@@ -20,8 +20,8 @@ class TeamController(val teamService: TeamService) {
         return ResponseEntity.ok(teamService.getTeamById(teamId))
     }
 
-    @PutMapping("teams/{team-id}")
-    fun updateTeamById(@PathVariable("team-id") teamId: String, team: Team): Team {
-        return teamService.updateTeamById(teamId, team);
+    @PutMapping("teams")
+    fun updateTeamById(@RequestBody team: Team): Team {
+        return teamService.updateTeamById(team);
     }
 }
