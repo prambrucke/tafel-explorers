@@ -10,4 +10,9 @@ data class Team (
         val created_at: Date?,
         val updated_by: String?,
         val updated_at: Date ?
-)
+){
+    constructor(id: Int?) : this(id, null, null, null, null, null, null)
+}
+
+
+data class ExtendedTeam(val team: Team, val explorers: Collection<Explorer>)

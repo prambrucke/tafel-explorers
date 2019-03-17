@@ -14,7 +14,7 @@ object SQLQueries {
     val CREATE_TEAM: String = """
         INSERT INTO "tafel-explorers".teams(
                 name, status, created_by, created_at, updated_by, updated_at)
-        VALUES (:name, :status, :created_by, :created_at, :updated_by, :updated_at);
+        VALUES (:name, :status, :created_by, :created_at, :updated_by, :updated_at) RETURNING id;
     """.trimIndent()
     val UPDATE_TEAM_BY_ID: String = """
         UPDATE "tafel-explorers".teams set
@@ -40,5 +40,10 @@ object SQLQueries {
     val REMOVE_TEAM_MAPPING_FOR_EXPLORER_BY_ID: String = """
         UPDATE "tafel-explorers".explorer_team SET status = :status, updated_by = :updated_by, updated_at = :updated_at
          where team_id::varchar = :team_id and explorer_id = :explorer_id
+    """.trimIndent()
+    val GET_EXPLORERS_FOR_TEAM_ID: String = """
+        SELECT explorer.id, explorer.first_name, explorer.last_name, explorer.role, explorer.status from
+        "tafel-explorers".explorers explorer, "tafel-explorers".explorer_team mapper  WHERE mapper.explorer_id = explorer.id
+        AND mapper.team_id = :team_id
     """.trimIndent()
 }
